@@ -48,21 +48,21 @@ const cardlist = document.querySelector(".cards");
 // const followersArray = ["tetondan", "dustinmyers", "justsml", "luishrd", "bigknell"];
 
 axios.get("https://api.github.com/users/garybot")
-    .then(response => {
-      cardlist.appendChild(createCard(response.data));
-      return axios.get(response.data.followers_url);
+  .then(response => {
+    cardlist.appendChild(createCard(response.data));
+    return axios.get(response.data.followers_url);
+  })
+  .then(response => {
+    const followerList = response.data.map(user => user.login);
+    followerList.forEach(uid => {
+      axios.get(`https://api.github.com/users/${uid}`)
+        .then(response => {
+          cardlist.appendChild(createCard(response.data))
+        })
+        .catch(err => console.log(err));
     })
-    .then(response => {
-      const followerList = response.data.map(user => user.login);
-      followerList.forEach(uid => {
-        axios.get(`https://api.github.com/users/${uid}`)
-            .then(response => {
-              cardlist.appendChild(createCard(response.data))
-            })
-            .catch(err => console.log(err));
-      })
-    })
-    .catch(err => console.log(err));
+  })
+  .catch(err => console.log(err));
 
 
 // followersArray.forEach(uid => {
